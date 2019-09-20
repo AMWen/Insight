@@ -1,7 +1,6 @@
 from flask import Flask, Markup, render_template, request
 import pandas as pd
 import Levenshtein as lev
-import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -23,10 +22,6 @@ def index():
 
     labels = ['Logistics', 'Timeliness', 'Billing', 'Communication', 'Quality of Care']
     values = [parking, waiting, payments, communication, quality]
-    
-    fig, ax = plt.subplots()
-    ax.plot([1, 1], [1, 2])
-    ax.set_title('A single plot')
     
     # If search was performed
     if request.method == "POST":
@@ -77,8 +72,7 @@ def index():
                            quality=quality,
                            overall=overall,
                            labels=labels,
-                           values=values,
-                           fig=fig)
+                           values=values)
 
 @app.route('/about')
 def about():
@@ -89,4 +83,4 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run()
