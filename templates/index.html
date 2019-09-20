@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/favicon.ico">
+        
+    <title>Hospitable Hospitals</title>
+
+    <!-- Custom Style CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- For bar chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+</head>
+
+<body>
+    
+    <!-- Navigation bar fixed at top -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <h2 style="margin-top:-8px">Hospitable Hospitals</h2></a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/about"><h4 style="margin-top:0px">About</h4></a></li>
+                    <li><a href="/contact"><h4 style="margin-top:0px">Contact</h4></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- Jumbotron for primary message -->
+    <div class="jumbotron">
+        <div class="container" style="margin-bottom:-40px">
+            <p>Helping hospitals achieve higher ratings through improving patient experience</p>
+        </div>
+    </div>
+    
+    <!-- Page content -->
+    <div class="container">
+        
+        <div class="row">
+
+            <!-- Parameters on left -->
+            <div class="col-sm-4" style="width:350px">
+                <!-- Search bar -->
+                <form method="POST" action="">
+                    <div>
+                        <h3 class="twofive">Hospital Name:</h3>
+                        <input type="text" name="name" value="{{hospital_name}}" placeholder="try: Beth Israel" size="36"/>
+                        
+                        <br><br>
+                    </div>
+
+                    <input type="submit" name="button" value="Search/Reset" size="36"/>
+
+                    <h3 class="twofive">% Positive Sentiment:</h3>
+                    <b>Logistics:</b>
+                    <input type="range" min="0" max="100" name="Parking" value="{{parking}}" id="Parking"/>
+                    <p class="text-right"><span id="value_parking"></span></p>
+                    
+                    <b>Timeliness:</b>
+                    <input type="range" min="0" max="100" name="Waiting" value="{{waiting}}" id="Waiting"/>
+                    <p class="text-right"><span id="value_waiting"></span></p>
+                    
+                    <b>Billing:</b>
+                    <input type="range" min="0" max="100" name="Payments" value="{{payments}}" id="Payments"/>
+                    <p class="text-right"><span id="value_payments"></span></p>
+                    
+                    <b>Communication:</b>
+                    <input type="range" min="0" max="100" name="Communication" value="{{communication}}" id="Communication"/>
+                    <p class="text-right"><span id="value_communication"></span></p>
+                    
+                    <b>Quality of Care:</b>
+                    <input type="range" min="0" max="100" name="Quality" value="{{quality}}" id="Quality"/>
+                    <p class="text-right"><span id="value_quality"></span></p>
+                    
+                    <script>
+                        var slider1 = document.getElementById("Parking");
+                        var output1 = document.getElementById("value_parking");
+                        output1.innerHTML = slider1.value;
+                        
+                        slider1.oninput = function() {
+                            output1.innerHTML = this.value;
+                        }
+                    
+                        var slider2 = document.getElementById("Waiting");
+                        var output2 = document.getElementById("value_waiting");
+                        output2.innerHTML = slider2.value;
+                        
+                        slider2.oninput = function() {
+                            output2.innerHTML = this.value;
+                        }
+                    
+                        var slider3 = document.getElementById("Payments");
+                        var output3 = document.getElementById("value_payments");
+                        output3.innerHTML = slider3.value;
+                        
+                        slider3.oninput = function() {
+                            output3.innerHTML = this.value;
+                        }
+                    
+                        var slider4 = document.getElementById("Communication");
+                        var output4 = document.getElementById("value_communication");
+                        output4.innerHTML = slider4.value;
+                        
+                        slider4.oninput = function() {
+                            output4.innerHTML = this.value;
+                        }
+                    
+                        var slider5 = document.getElementById("Quality");
+                        var output5 = document.getElementById("value_quality");
+                        output5.innerHTML = slider5.value;
+                        
+                        slider5.oninput = function() {
+                            output5.innerHTML = this.value;
+                        }
+                    </script>
+                    
+                    {{fig}}
+                    
+                    <br>
+                    
+                    <input type="submit" name="button" value="Update"/>
+                    
+                </form>
+                
+                <br><br>
+                
+            </div>
+            <!-- /.Parameters on left -->
+
+            <!-- Results on right -->
+            <div class="col-sm-8" style="margin-left:25px">
+                
+                <!-- Header with hospital name -->
+                <div class="well" style="padding-bottom:5px">
+                    <h2 style="margin-top:-5px"><b><a href="{{selected['Link']}}" target="_blank">{{name}}</a></b></h2>
+                </div>
+                
+                <!-- % positive results -->
+                <div class="row">
+                    
+                    <!-- Bar chart -->
+                    <div class="col-sm-8">
+                        <div class="well">
+                            <center>
+                                <b>% Positive Sentiment</b>
+                                <br><br>
+                            <canvas id="chart" width="450" height="275"></canvas>
+                            <script>
+                                // Bar chart data and labels
+                                var barData = {
+                                    labels : [{% for item in labels %}
+                                              "{{ item }}",
+                                              {% endfor %}],
+                                    
+                                    datasets : [{
+                                                fillColor: "rgba(151,187,205,0.2)",
+                                                strokeColor: "rgba(151,187,205,1)",
+                                                pointColor: "rgba(151,187,205,1)",
+                                                data : [{% for item in values %}
+                                                        "{{ item }}",
+                                                        {% endfor %}]
+                                               }]
+                                       }
+                            
+                                // Get bar chart canvas
+                                var mychart = document.getElementById("chart").getContext("2d");
+                                steps = 5
+                                max = 100
+                                
+                                // Draw bar chart
+                                new Chart(mychart).Bar(barData, {
+                                                       scaleOverride: true,
+                                                       scaleSteps: steps,
+                                                       scaleStepWidth: Math.ceil(max / steps),
+                                                       scaleStartValue: 0,
+                                                       scaleShowVerticalLines: true,
+                                                       scaleShowGridLines : true,
+                                                       barShowStroke : true,
+                                                       scaleShowLabels: true,
+                                                       }
+                                                       );
+                            </script>
+                            <br>
+                            </center>
+                        </div>
+                    </div>
+                    
+                    <!-- Overall bar chart -->
+                    <div class="col-sm-4">
+                        <div class="well">
+                            <b>Overall Rating: </b>{{overall}} <br><br>
+                            <canvas id="chart2" width="150" height="275"></canvas>
+                            <script>
+                                // Bar chart data and labels
+                                var barData2 = {
+                                    labels : ["Overall Rating",],
+                                    
+                                              datasets : [{
+                                                          fillColor: "rgba(151,187,205,0.2)",
+                                                          strokeColor: "rgba(151,187,205,1)",
+                                                          pointColor: "rgba(151,187,205,1)",
+                                                          data : [{{ overall }}]
+                                                          }]
+                                }
+                            
+                            // Get bar chart canvas
+                            var mychart2 = document.getElementById("chart2").getContext("2d");
+                            steps = 5
+                            max = 5
+                            
+                            // Draw bar chart
+                            new Chart(mychart2).Bar(barData2, {
+                                                   scaleOverride: true,
+                                                   scaleSteps: steps,
+                                                   scaleStepWidth: Math.ceil(max / steps),
+                                                   scaleStartValue: 0,
+                                                   scaleShowVerticalLines: true,
+                                                   scaleShowGridLines : true,
+                                                   barShowStroke : true,
+                                                   scaleShowLabels: true,
+                                                   }
+                                                   );
+                            </script>
+                        </div>
+                    </div>
+                </div>
+  
+                <!-- Hospital highlights -->
+                {% if summary != "NONE" %}
+                <div class="well">
+                    <h3>Hospital Highlights</h3>
+                    <h4>
+                        <p><font color="#248c3e"><b>Positive:</b></font></p>
+                        {% for i in range(0, 3) %}
+                            {% if summary.split("SPLIT")[i] != "" %}
+                                <p>&#8226;&nbsp; {{summary.split("SPLIT")[i]}}</p>
+                            {% endif %}
+                        {% endfor %}
+                         
+                        <p><font color="#b72a2a"><b>Negative:</b></font></p>
+                        {% for i in range(3, 6) %}
+                            {% if summary.split("SPLIT")[i] != "" %}
+                                <p>&#8226;&nbsp; {{summary.split("SPLIT")[i]}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </h4>
+                    (Curated from {{summary.split("SPLIT")[6]}} total sentences.)
+                    <br>
+                </div>
+                {% endif %}
+            </div>
+            <!-- /.Results on right -->
+
+        </div>
+        <!-- /.row -->
+        
+    </div>
+    <!-- /.container -->
+
+</body>
+</html>
+
