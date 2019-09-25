@@ -1,3 +1,0 @@
-python 4_LDA_model.py
-python 5_sentiment_analysis.py
-python 6_linear_regression.py
