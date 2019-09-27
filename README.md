@@ -1,15 +1,17 @@
 # Hospitable Hospitals
 
-This is a web application that assists hospital administrators with identifying key target areas to focus on to most efficiently improve patient satisfaction and public ratings.
+Hospitable Hospitals is a web application that assists hospital administrators with identifying key target areas to focus on to most efficiently improve patient satisfaction and public ratings. By improving their public perception, hospitals can then broaden their customer base.
 
-Random forest regression was performed to predict a hospital's overall public rating based on parameters obtained from Yelp reviews that were processed using NLP topic modeling and sentiment analysis techniques as well as patient survey data.
+Predictive modeling of patient ratings was performed using natural language processing, random foreset regression, and other machine learning tools. The result outputs the main areas Hospitals can then decide .
 
-## Project pipeline
-1. Obtain Medicare Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data of hospitals, pivot the table so columns are the various metrics (cleanliness, communication, etc.), remove hospitals without any data, and select MA and NY hospitals.
-2. Find Yelp links for the various hospitals and use BeautifulSoup to perform web scraping of Yelp for their reviews.
-3. Perform some preliminary exploratory data analysis of the ratings distributions.
-4. Train an LDA model using reviews to obtain topics.
-5. Use NLTK VADER to perform sentence-by-sentence sentiment analysis to determine overall sentiment on each topic and extract the most positive and most negative reviews.
-6. Perform linear regression on survey and Yelp data and analyze results.
-7. Perform random forest regression on survey and yelp data and analyze results.
-8. Create web app using Flask that integrates the regression results and provides a dashboard so hospitals can use to determine how changes in the various parameters would affect their overall rating.
+This project was completed in 3 weeks as part of the [Insight Health Data Science program](https://www.insighthealthdata.com).
+
+## 1. Dataset
+- ~900,000 words from ~9,000 reviews pertaining to 180 hospitals within MA and NY.
+- 2017-2018 Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data from Medicare 
+
+## 2. Survey data
+
+## 3. Yelp data
+
+## 4. Regression model
