@@ -27,6 +27,7 @@ def index():
     # Initialize values to MGH
     init = 21
     hospital_name = ""
+    message = " "
     sorted_data = data.loc[init:init+2].reset_index(drop=True)
     experience=round(sorted_data.loc[0]['Overall Experience'], 1)
     timeliness=round(sorted_data.loc[0]['Timeliness'], 1)
@@ -90,7 +91,14 @@ def index():
                              'Cleanliness': cleanliness, 'Friendliness': round(sorted_data.loc[0]['Friendliness'], 1),
                              'Quietness': quietness, 'Helpfulness': helpfulness,
                              'Communication': communication}, index=[0])
+            old=round(sorted_data.loc[0]['Average Rating'], 1)
             overall = round(float(rf.predict(X)), 1)
+            
+            if overall > old:
+                change = round((overall-old)/old*100, 1)
+                message = str(change)+"% increase!"
+            else:
+                message = " "
 
         values = [experience, timeliness, cleanliness, helpfulness, communication, quietness]
             
@@ -108,7 +116,8 @@ def index():
                            labels=labels,
                            values=values,
                            overall=overall,
-                           rounded_values=rounded_values)
+                           rounded_values=rounded_values,
+                           message=message)
 
 @app.route('/about')
 def about():

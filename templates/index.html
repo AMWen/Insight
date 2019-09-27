@@ -141,8 +141,7 @@
                     
                     <!-- Bar chart -->
                     <div class="col-sm-8">
-                        <div class="well">
-                            <center>
+                        <div class="well" style="text-align:center">
                                 <h4 style="margin-top:-5px; margin-bottom:-15px"><b>% Positive Sentiment</b></h4>
                                 <br><br>
                             <canvas id="chart" width="450" height="300"></canvas>
@@ -188,9 +187,14 @@
                     
                     <!-- Overall bar chart -->
                     <div class="col-sm-4">
-                        <div class="well">
+                        <div class="well" style="text-align:center">
                             <h4 style="margin-top:-5px; margin-bottom:-15px"><b>Overall Rating: </b>{{overall}}</h4>
-                            <br><br>
+                            <br>
+                            {% if message==" " %}
+                                <br>
+                            {% endif %}
+                            
+                            <center>{{message}}</center>
                             <canvas id="chart2" width="150" height="280"></canvas>
                             <script>
                                 // Bar chart data and labels
