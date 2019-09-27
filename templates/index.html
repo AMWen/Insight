@@ -16,6 +16,13 @@
 
     <!-- For bar chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+    <style>
+    .slider
+    {
+    width: 98%;
+    }
+    </style>
 </head>
 
 <body>
@@ -63,82 +70,58 @@
                     <div>
                         <h3 class="twofive">Hospital Name:</h3>
                         <input type="text" name="name" value="{{hospital_name}}" placeholder="try: Beth Israel" size="36"/>
-                        
-                        <br><br>
                     </div>
+                    
+                    <br>
 
                     <input type="submit" name="button" value="Search/Reset" size="36"/>
 
-                    <h3 class="twofive">% Positive Sentiment:</h3>
-                    <b>Logistics:</b>
-                    <input type="range" min="0" max="100" name="Parking" value="{{parking}}" id="Parking"/>
-                    <p class="text-right"><span id="value_parking"></span></p>
+                    <br><br>
                     
-                    <b>Timeliness:</b>
-                    <input type="range" min="0" max="100" name="Waiting" value="{{waiting}}" id="Waiting"/>
-                    <p class="text-right"><span id="value_waiting"></span></p>
+                    <h3 class="twofive">Yelp Reviews:</h3>
                     
-                    <b>Billing:</b>
-                    <input type="range" min="0" max="100" name="Payments" value="{{payments}}" id="Payments"/>
-                    <p class="text-right"><span id="value_payments"></span></p>
-                    
-                    <b>Communication:</b>
-                    <input type="range" min="0" max="100" name="Communication" value="{{communication}}" id="Communication"/>
-                    <p class="text-right"><span id="value_communication"></span></p>
-                    
-                    <b>Quality of Care:</b>
-                    <input type="range" min="0" max="100" name="Quality" value="{{quality}}" id="Quality"/>
-                    <p class="text-right"><span id="value_quality"></span></p>
-                    
-                    <script>
-                        var slider1 = document.getElementById("Parking");
-                        var output1 = document.getElementById("value_parking");
-                        output1.innerHTML = slider1.value;
+                    <div class="slider">
+                        <b>Overall Experience:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Overall" value="{{rounded_values[0]}}"><br>
                         
-                        slider1.oninput = function() {
-                            output1.innerHTML = this.value;
-                        }
-                    
-                        var slider2 = document.getElementById("Waiting");
-                        var output2 = document.getElementById("value_waiting");
-                        output2.innerHTML = slider2.value;
+                        <b>Timeliness:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Timeliness" value="{{rounded_values[1]}}"><br>
                         
-                        slider2.oninput = function() {
-                            output2.innerHTML = this.value;
-                        }
+                        <b>Cleanliness:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Cleanliness" value="{{rounded_values[2]}}">
+                    </div>
                     
-                        var slider3 = document.getElementById("Payments");
-                        var output3 = document.getElementById("value_payments");
-                        output3.innerHTML = slider3.value;
+                    <p style="text-align:left;">😞<span style="float:right;">😀</span> </p>
+                    
+                    <h3 class="twofive">Medicare Surveys:</h3>
+                    
+                    <div class="slider">
+                        <b>Helpfulness:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Helpfulness" value="{{rounded_values[3]}}" id="Helpfulness"/><br>
                         
-                        slider3.oninput = function() {
-                            output3.innerHTML = this.value;
-                        }
-                    
-                        var slider4 = document.getElementById("Communication");
-                        var output4 = document.getElementById("value_communication");
-                        output4.innerHTML = slider4.value;
+                        <b>Communication:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Communication" value="{{rounded_values[4]}}" id="Communication"/><br>
                         
-                        slider4.oninput = function() {
-                            output4.innerHTML = this.value;
-                        }
+                        <b>Quietness:</b>
+                        <input type="range" step=25 list="tickmarks2" name="Quietness" value="{{rounded_values[5]}}" id="Quietness"/>
+                    </div>
                     
-                        var slider5 = document.getElementById("Quality");
-                        var output5 = document.getElementById("value_quality");
-                        output5.innerHTML = slider5.value;
-                        
-                        slider5.oninput = function() {
-                            output5.innerHTML = this.value;
-                        }
-                    </script>
-                    
-                    {{fig}}
+                    <p style="text-align:left;">😞<span style="float:right;">😀</span> </p>
                     
                     <br>
                     
                     <input type="submit" name="button" value="Update"/>
                     
                 </form>
+                
+                <!-- Settings for slider bar tickmarks -->
+                <datalist id="tickmarks2">
+                    <option value="0" label="Unhappy"></option>
+                    <option value="25"></option>
+                    <option value="50"></option>
+                    <option value="75"></option>
+                    <option value="100" label="Happy"></option>
+                </datalist>
                 
                 <br><br>
                 
@@ -160,9 +143,9 @@
                     <div class="col-sm-8">
                         <div class="well">
                             <center>
-                                <b>% Positive Sentiment</b>
+                                <h4 style="margin-top:-5px; margin-bottom:-15px"><b>% Positive Sentiment</b></h4>
                                 <br><br>
-                            <canvas id="chart" width="450" height="275"></canvas>
+                            <canvas id="chart" width="450" height="300"></canvas>
                             <script>
                                 // Bar chart data and labels
                                 var barData = {
@@ -171,9 +154,9 @@
                                               {% endfor %}],
                                     
                                     datasets : [{
-                                                fillColor: "rgba(151,187,205,0.2)",
-                                                strokeColor: "rgba(151,187,205,1)",
-                                                pointColor: "rgba(151,187,205,1)",
+                                                fillColor: "rgba(151,187,205,0.15)",
+                                                strokeColor: "rgba(151,187,205,0.8)",
+                                                pointColor: "rgba(151,187,205,0.8)",
                                                 data : [{% for item in values %}
                                                         "{{ item }}",
                                                         {% endfor %}]
@@ -206,15 +189,16 @@
                     <!-- Overall bar chart -->
                     <div class="col-sm-4">
                         <div class="well">
-                            <b>Overall Rating: </b>{{overall}} <br><br>
-                            <canvas id="chart2" width="150" height="275"></canvas>
+                            <h4 style="margin-top:-5px; margin-bottom:-15px"><b>Overall Rating: </b>{{overall}}</h4>
+                            <br><br>
+                            <canvas id="chart2" width="150" height="280"></canvas>
                             <script>
                                 // Bar chart data and labels
                                 var barData2 = {
                                     labels : ["Overall Rating",],
                                     
                                               datasets : [{
-                                                          fillColor: "rgba(151,187,205,0.2)",
+                                                          fillColor: "rgba(151,187,205,0.6",
                                                           strokeColor: "rgba(151,187,205,1)",
                                                           pointColor: "rgba(151,187,205,1)",
                                                           data : [{{ overall }}]
@@ -239,16 +223,13 @@
                                                    }
                                                    );
                             </script>
+                            <br><br>
                         </div>
                     </div>
                 </div>
   
                 <!-- Hospital highlights -->
-<<<<<<< HEAD
-                {% if summary != "" %}
-=======
                 {% if summary != "NONE" %}
->>>>>>> 1f6145d8afd265b5851683961f5a77c1a46a4f7a
                 <div class="well">
                     <h3>Hospital Highlights</h3>
                     <h4>

@@ -1,27 +1,51 @@
 from flask import Flask, Markup, render_template, request
 import pandas as pd
 import Levenshtein as lev
+import pickle
+from sklearn.ensemble import RandomForestRegressor
 
 app = Flask(__name__)
 
 # Load data
-data = pd.read_csv("./data/all_hospitals.csv")
+data = pd.read_csv("./data/all_hospitals_cleaned.csv")
+
+# Rounded values for slider bar
+def percentoverall(value, column):
+    temp = (value-column.min())/(column.max()-column.min())*100
+    return 25*round(temp/25)
+
+# Extract values from slider bar
+def percentresult(value, column):
+    return value/100*(column.max()-column.min())+column.min()
+
+# Load random forest regression fit
+rf = pickle.load(open("./data/rf.pickle", "rb"))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    # Initialize values to first hospital
+    # Initialize values to MGH
+    init = 21
     hospital_name = ""
-    sorted_data = data
-    parking=round(sorted_data.loc[0]['Parking'], 1)
-    waiting=round(sorted_data.loc[0]['Wait Time'], 1)
-    payments=round(sorted_data.loc[0]['Payments'], 1)
+    sorted_data = data.loc[init:init+2].reset_index(drop=True)
+    experience=round(sorted_data.loc[0]['Overall Experience'], 1)
+    timeliness=round(sorted_data.loc[0]['Timeliness'], 1)
+    cleanliness=round(sorted_data.loc[0]['Cleanliness'], 1)
+    helpfulness=round(sorted_data.loc[0]['Helpfulness'], 1)
     communication=round(sorted_data.loc[0]['Communication'], 1)
-    quality=round(sorted_data.loc[0]['Quality of Care'], 1)
+    quietness=round(sorted_data.loc[0]['Quietness'], 1)
     overall=round(sorted_data.loc[0]['Average Rating'], 1)
 
-    labels = ['Logistics', 'Timeliness', 'Billing', 'Communication', 'Quality of Care']
-    values = [parking, waiting, payments, communication, quality]
+    # Labels and values for bar graph
+    labels = ['Overall', 'Timeliness', 'Cleanliness', 'Helpfulness', 'Communication', 'Quietness']
+    values = [experience, timeliness, cleanliness, helpfulness, communication, quietness]
+    
+    rounded_values = [percentoverall(experience, data['Overall Experience']),
+                      percentoverall(timeliness, data['Timeliness']),
+                      percentoverall(cleanliness, data['Cleanliness']),
+                      percentoverall(helpfulness, data['Helpfulness']),
+                      percentoverall(communication, data['Communication']),
+                      percentoverall(quietness, data['Quietness'])]
     
     # If search was performed
     if request.method == "POST":
@@ -36,43 +60,55 @@ def index():
         if hospital_name != "":
             for index, row in data.iterrows():
                 data.loc[index, 'Distance Ratio'] = lev.ratio(hospital_name.lower(), row['Hospital Name'].lower())
+            sorted_data = data.reset_index(drop=True)
+        else:
+            sorted_data = data.loc[init:init+2].reset_index(drop=True)
 
         # Sort the hospitals by match distance
-        sorted_data = data.sort_values(['Distance Ratio'], ascending=False).reset_index(drop=True)
+        sorted_data = sorted_data.sort_values(['Distance Ratio'], ascending=False).reset_index(drop=True)
 
         if dict(request.form)["button"] == "Search/Reset":
             # Extract and round values for each topic
-            parking = round(sorted_data.loc[0]['Parking'], 1)
-            waiting = round(sorted_data.loc[0]['Wait Time'], 1)
-            payments = round(sorted_data.loc[0]['Payments'], 1)
-            communication = round(sorted_data.loc[0]['Communication'], 1)
-            quality = round(sorted_data.loc[0]['Quality of Care'], 1)
-            overall = round(sorted_data.loc[0]['Average Rating'], 1)
-        
+            experience=round(sorted_data.loc[0]['Overall Experience'], 1)
+            timeliness=round(sorted_data.loc[0]['Timeliness'], 1)
+            cleanliness=round(sorted_data.loc[0]['Cleanliness'], 1)
+            helpfulness=round(sorted_data.loc[0]['Helpfulness'], 1)
+            communication=round(sorted_data.loc[0]['Communication'], 1)
+            quietness=round(sorted_data.loc[0]['Quietness'], 1)
+            overall=round(sorted_data.loc[0]['Average Rating'], 1)
+            
         else:
-            parking = int(dict(request.form)["Parking"])
-            waiting = int(dict(request.form)["Waiting"])
-            payments = int(dict(request.form)["Payments"])
-            communication = int(dict(request.form)["Communication"])
-            quality = int(dict(request.form)["Quality"])
-            a = .02
-            b = c = d = e = .005/4
-            overall = 2.5+round(a*parking+b*waiting+c*payments+d*communication+e*quality, 1)
+            experience = percentresult(int(dict(request.form)["Overall"]), data['Overall Experience'])
+            timeliness = percentresult(int(dict(request.form)["Timeliness"]), data['Timeliness'])
+            cleanliness = percentresult(int(dict(request.form)["Cleanliness"]), data['Cleanliness'])
+            helpfulness = percentresult(int(dict(request.form)["Helpfulness"]), data['Helpfulness'])
+            communication = percentresult(int(dict(request.form)["Communication"]), data['Communication'])
+            quietness = percentresult(int(dict(request.form)["Quietness"]), data['Quietness'])
+            
+            # Predict rating based on values
+            X = pd.DataFrame({'Overall Experience': experience, 'Timeliness': timeliness,
+                             'Cleanliness': cleanliness, 'Friendliness': round(sorted_data.loc[0]['Friendliness'], 1),
+                             'Quietness': quietness, 'Helpfulness': helpfulness,
+                             'Communication': communication}, index=[0])
+            overall = round(float(rf.predict(X)), 1)
 
-        values = [parking, waiting, payments, communication, quality]
+        values = [experience, timeliness, cleanliness, helpfulness, communication, quietness]
+            
+        rounded_values = [percentoverall(experience, data['Overall Experience']),
+                          percentoverall(timeliness, data['Timeliness']),
+                          percentoverall(cleanliness, data['Cleanliness']),
+                          percentoverall(helpfulness, data['Helpfulness']),
+                          percentoverall(communication, data['Communication']),
+                          percentoverall(quietness, data['Quietness'])]
     
     return render_template('index.html', hospital_name=hospital_name,
                            selected=sorted_data.loc[0],
                            name=sorted_data.loc[0]['Hospital Name'],
                            summary=sorted_data.loc[0]['Summary'],
-                           parking=parking,
-                           waiting=waiting,
-                           payments=payments,
-                           communication=communication,
-                           quality=quality,
-                           overall=overall,
                            labels=labels,
-                           values=values)
+                           values=values,
+                           overall=overall,
+                           rounded_values=rounded_values)
 
 @app.route('/about')
 def about():
@@ -83,4 +119,4 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
