@@ -9,10 +9,10 @@ This project was completed in 3 weeks as part of the [Insight Health Data Scienc
 - ~900,000 words from ~9,000 reviews pertaining to 180 hospitals within MA and NY.
 - 2017-2018 Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data from Medicare 
 
-## 2. Survey data
+## 2. Survey data processing
 Medicare patient data was cleaned through pivotting of the table  
 
-## 3. Yelp data
+## 3. Yelp data processing
 
 
 ## 4. Regression model
