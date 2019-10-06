@@ -4,8 +4,6 @@ This is a web application that assists hospital administrators with identifying 
 
 Random forest regression was performed to predict a hospital's overall public rating based on parameters obtained from Yelp reviews that were processed using NLP topic modeling and sentiment analysis techniques as well as patient survey data from Medicare (HCAHPS).
 
-Up to 75% accuracy was achieved using this model.
-
 ## Project pipeline
 1. Obtain Medicare Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data of hospitals, pivot the table so columns are the various metrics (cleanliness, communication, etc.), remove hospitals without any data, and select MA and NY hospitals.
 2. Find Yelp links for the various hospitals and use BeautifulSoup to perform web scraping of Yelp for their reviews.
