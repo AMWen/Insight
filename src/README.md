@@ -12,4 +12,4 @@ Random forest regression was performed to predict a hospital's overall public ra
 5. Use NLTK VADER to perform sentence-by-sentence sentiment analysis to determine overall sentiment on each topic and extract the most positive and most negative reviews.
 6. Perform linear regression on survey and Yelp data and analyze results.
 7. Perform random forest regression on survey and yelp data and analyze results.
-8. Create a web app using Flask that integrates the regression results and provides a dashboard so hospitals can use to determine how changes in the various parameters would affect their overall rating (https://hospitable-hospitals.herokuapp.com).
+8. Create a web app using Flask that integrates the regression results and provides a dashboard so hospitals can use to determine how changes in the various parameters would affect their overall rating (http://hospitable-hospitals.com/).
