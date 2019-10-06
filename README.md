@@ -5,6 +5,8 @@ Predictive modeling of patient ratings was performed using machine learning tool
 
 This project was completed in 3 weeks as part of the [Insight Health Data Science program](https://www.insighthealthdata.com).
 
+The back-end modeling code can be found in [src](https://github.com/AMWen/Insight/tree/master/src) and the front-end web application development files can be found in [webapp](https://github.com/AMWen/Insight/tree/master/webapp).
+
 ## 1. Datasets
 - ~900,000 words from ~9,000 reviews pertaining to 180 hospitals within MA and NY.
 - 2017-2018 Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data from Medicare 
