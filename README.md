@@ -10,7 +10,7 @@ This project was completed in 3 weeks as part of the [Insight Health Data Scienc
 - 2017-2018 Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) survey data from Medicare 
 
 ## 2. Survey data processing
-Medicare patient data was cleaned through pivotting of the table  
+Medicare patient survey data was obtained from [Medicare's website](https://data.medicare.gov/data/archives/hospital-compare). Using pandas dataframes, the table was pivoted so the columns are the various metrics (cleanliness, communication, etc.), hospitals without any data were removed (generally children's hospitals), and MA and NY hospitals were selected.
 
 ## 3. Yelp data processing
 
