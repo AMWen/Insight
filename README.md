@@ -21,4 +21,4 @@ Yelp reviews from MA and NY hospitals were scraped and parsed using BeautifulSou
 Linear regression and random forest regression were performed to predict hopsital ratings based on Yelp and survey data. Random forest regression outperformed linear regression, likely due to multicollinearity issues, with an R^2 value of 0.78.
 
 ## 5. Acknowledgments
-Thank you to Aleem Juma and Nuo Wang for helpful resources related to [guided LDA](http://scignconsulting.com/2019/03/09/guided-lda/) and [Yelp review scraping](https://github.com/nuwapi/DoctorSnapshot), respectively.
+Thank you to Aleem Juma and Nuo Wang for helpful resources related to [guided LDA](https://nbviewer.jupyter.org/urls/gist.githubusercontent.com/scign/2dda76c292ef76943e0cd9ff8d5a174a/raw/c6c099b7717227933e7ca1cf0327478a050d4a19/Guided%2520LDA%2520using%2520gensim.ipynb) and [Yelp review scraping](https://github.com/nuwapi/DoctorSnapshot), respectively.
